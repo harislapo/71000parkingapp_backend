@@ -98,7 +98,7 @@ module.exports = {
     );
   },
 
-  //Remove parking from reserve html template
+  //Remove parking from reserved html template
   removeParkingFromReserve: function (req, res) {
     const id = req.query.id;
     conn.query("DELETE FROM reserve_parking WHERE id = ?", [id], function (
@@ -106,7 +106,7 @@ module.exports = {
       results
     ) {
       if (err) return res.send(err);
-      res.status(200).json({ message: "Sucessfully removed from reserve" });
+      res.status(200).json({ message: "Sucessfully removed from reserved" });
     });
   },
 
@@ -181,4 +181,14 @@ module.exports = {
       res.status(200).json(results.insertId);
     });
   },
-};
+
+  deleteParking: function (req, res) {
+    const id = req.query.id;
+    conn.query("DELETE FROM parking WHERE id = ?", [id], function (
+      err,
+      results
+    ) {
+      if (err) return res.send(err);
+      res.status(200).json({ message: "Parking removed!" });
+    });
+  },};

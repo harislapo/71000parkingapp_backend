@@ -35,6 +35,9 @@ app.get("/finished-reservations/all", parkingDAO.getFinishedReservationsForUser)
 app.get("/parking/comments", parkingDAO.getComments);
 app.post("/parking/comments/add-comment", parkingDAO.addComment);
 
+app.get("/admin/get/all-users", userDAO.getAllUsers);
+app.delete("/admin/delete-user", userDAO.deleteUser)
+app.delete("/admin/delete-parking", parkingDAO.deleteParking)
 
 app.listen(PORT, function () {
   console.log("Application is started on port " + PORT);
