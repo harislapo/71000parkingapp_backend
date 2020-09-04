@@ -191,4 +191,5 @@ module.exports = {
       if (err) return res.send(err);
       res.status(200).json({ message: "Parking removed!" });
     });
-  },};
+  },
+};
