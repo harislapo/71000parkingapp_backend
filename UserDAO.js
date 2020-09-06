@@ -47,6 +47,7 @@ module.exports = {
     });
   },
 
+  //admin
   deleteUser: function (req, res) {
     const id = req.query.id;
     conn.query("DELETE FROM user WHERE id = ?", [id], function (

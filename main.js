@@ -18,23 +18,31 @@ app.get("/", function (req, res) {
   res.send("Welcome to the 71000parking app!");
 });
 
+//user
 app.post("/user/register", userDAO.register);
 app.post("/user/login", userDAO.login);
 
+//parkings
 app.get("/parking/all", parkingDAO.getAll);
 app.post("/parking/search", parkingDAO.searchParkings);
 app.post("/parking/add/new", parkingDAO.addNewParking);
-
 app.post("/parking/add-to-reserved", parkingDAO.addParkingToReserve);
-app.get("/reserved/parking", parkingDAO.getReservedForUser);
+
+//reservations
+app.get("/reserved/get-reserved", parkingDAO.getReservedForUser);
 app.delete("/reserved/delete", parkingDAO.removeParkingFromReserve)
 
+//finished reservations/profile
 app.post("/finished-reservations/insert-reservation", parkingDAO.saveReservationsForUser);
 app.get("/finished-reservations/all", parkingDAO.getFinishedReservationsForUser);
 
+//parking previews
 app.get("/parking/comments", parkingDAO.getComments);
 app.post("/parking/comments/add-comment", parkingDAO.addComment);
+app.post("/parking/ratings/add-rating", parkingDAO.rateParking);
+app.get("/parking/ratings/get-rating-for-user", parkingDAO.getRatingForUser);
 
+//admin
 app.get("/admin/get/all-users", userDAO.getAllUsers);
 app.delete("/admin/delete-user", userDAO.deleteUser)
 app.delete("/admin/delete-parking", parkingDAO.deleteParking)

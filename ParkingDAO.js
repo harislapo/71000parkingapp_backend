@@ -171,6 +171,18 @@ module.exports = {
     });
   },
 
+  //admin
+  deleteParking: function (req, res) {
+    const id = req.query.id;
+    conn.query("DELETE FROM parking WHERE id = ?", [id], function (
+      err,
+      results
+    ) {
+      if (err) return res.send(err);
+      res.status(200).json({ message: "Parking removed!" });
+    });
+  },
+
   addComment: function (req, res) {
     const comment = req.body;
     conn.query("INSERT INTO parking_comment SET ?", [comment], function (
@@ -182,14 +194,27 @@ module.exports = {
     });
   },
 
-  deleteParking: function (req, res) {
-    const id = req.query.id;
-    conn.query("DELETE FROM parking WHERE id = ?", [id], function (
+  rateParking: function (req, res) {
+    const rating = req.body;
+    conn.query("INSERT INTO parking_rating SET ?", [rating], function (
       err,
       results
     ) {
       if (err) return res.send(err);
-      res.status(200).json({ message: "Parking removed!" });
+      res.status(200).json(results.insertId);
     });
+  },
+
+  getRatingForUser: function (req, res) {
+    const userId = req.query.userId;
+    const parkingId = req.query.parkingId;
+    conn.query(
+      "select * from parking_rating where userId = ? AND parkingId = ?;",
+      [userId, parkingId],
+      function (err, results) {
+        if (err) return res.status(500).send(err);
+        res.status(200).json(results);
+      }
+    );
   },
 };
