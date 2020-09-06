@@ -217,4 +217,16 @@ module.exports = {
       }
     );
   },
+
+  deleteRating:function (req, res) {
+    const parkingId = req.query.parkingId;
+    const userId = req.query.userId;
+    conn.query("DELETE FROM parking_rating WHERE parkingId = ? AND userId = ?", [parkingId, userId], function (
+      err,
+      results
+    ) {
+      if (err) return res.send(err);
+      res.status(200).json({ message: "Rating removed!" });
+    });
+  },
 };

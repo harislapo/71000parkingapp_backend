@@ -36,11 +36,12 @@ app.delete("/reserved/delete", parkingDAO.removeParkingFromReserve)
 app.post("/finished-reservations/insert-reservation", parkingDAO.saveReservationsForUser);
 app.get("/finished-reservations/all", parkingDAO.getFinishedReservationsForUser);
 
-//parking previews
+//parking preview
 app.get("/parking/comments", parkingDAO.getComments);
 app.post("/parking/comments/add-comment", parkingDAO.addComment);
 app.post("/parking/ratings/add-rating", parkingDAO.rateParking);
 app.get("/parking/ratings/get-rating-for-user", parkingDAO.getRatingForUser);
+app.delete("/parking/ratings/remove-rating", parkingDAO.deleteRating);
 
 //admin
 app.get("/admin/get/all-users", userDAO.getAllUsers);
