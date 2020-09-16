@@ -194,16 +194,31 @@ module.exports = {
     });
   },
 
-  rateParking: function (req, res) {
-    const rating = req.body;
-    conn.query("INSERT INTO parking_rating SET ?", [rating], function (
+/*   rateParking: function (req, res) {
+    const id = req.body.id;
+    const rating = req.body.rating;
+    const userId = req.body.userId;
+    const parkingId = req.body.parkingId;
+
+    //conn.query("INSERT INTO parking_rating SET ?", [rating], function (
+      conn.query(`if exists (select * from parking_rating with (updlock,serializable) where id = @id)
+      begin
+         update table set rating=@rating
+         where id = @id
+      end
+      else
+      begin
+         insert into table (key, ...)
+         values (@key, ...)
+      end
+      commit tran`), [], [], [], function (
       err,
       results
     ) {
       if (err) return res.send(err);
       res.status(200).json(results.insertId);
     });
-  },
+  } */
 
   getRatingForUser: function (req, res) {
     const userId = req.query.userId;
@@ -229,4 +244,6 @@ module.exports = {
       res.status(200).json({ message: "Rating removed!" });
     });
   },
+
+  
 };
