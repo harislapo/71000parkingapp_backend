@@ -39,8 +39,9 @@ app.get("/finished-reservations/all", parkingDAO.getFinishedReservationsForUser)
 //parking preview
 app.get("/parking/comments", parkingDAO.getComments);
 app.post("/parking/comments/add-comment", parkingDAO.addComment);
-/* app.post("/parking/ratings/add-rating", parkingDAO.rateParking);
- */app.get("/parking/ratings/get-rating-for-user", parkingDAO.getRatingForUser);
+app.post("/parking/ratings/add-rating", parkingDAO.rateParking);
+app.get("/parking/ratings/get-rating-for-user", parkingDAO.getRatingForUser);
+app.get("/parking/ratings/get-average-rating", parkingDAO.getAverageRating);
 app.delete("/parking/ratings/remove-rating", parkingDAO.deleteRating);
 
 //admin

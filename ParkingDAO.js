@@ -10,7 +10,13 @@ function saveFinishedReservation(request) {
   return new Promise(function (resolve, reject) {
     conn.query(
       "INSERT INTO finished_reserve SET ?",
-      [{ parkingId: request.parkingId, userId: request.userId }],
+      [
+        {
+          parkingId: request.parkingId,
+          userId: request.userId,
+          hoursReserved: request.hoursReserved,
+        },
+      ],
       function (err, results) {
         if (err) return reject(err);
         resolve(results.insertId);
@@ -48,7 +54,7 @@ function reservedCounterAdd(id) {
 
 module.exports = {
   getAll: function (req, res) {
-    conn.query("SELECT * FROM PARKING ORDER BY createDate DESC;", function (
+    conn.query("SELECT * FROM PARKING ORDER BY createDate DESC LIMIT 6;", function (
       err,
       results
     ) {
@@ -136,7 +142,7 @@ module.exports = {
   getFinishedReservationsForUser: function (req, res) {
     const id = req.query.userId;
     conn.query(
-      "SELECT p.*, fr.dateCreated FROM finished_reserve fr JOIN parking p ON fr.parkingId = p.id WHERE fr.userId = ? ORDER BY p.createDate DESC;",
+      "SELECT p.*, fr.dateCreated, fr.hoursReserved FROM finished_reserve fr JOIN parking p ON fr.parkingId = p.id WHERE fr.userId = ? ORDER BY fr.dateCreated DESC;",
       [id],
       function (err, results) {
         if (err) return res.status(500).send(err);
@@ -194,37 +200,29 @@ module.exports = {
     });
   },
 
-/*   rateParking: function (req, res) {
-    const id = req.body.id;
-    const rating = req.body.rating;
+  rateParking: function (req, res) {
+    /* const rating = req.body; */
     const userId = req.body.userId;
     const parkingId = req.body.parkingId;
+    const rating = req.body.rating;
 
-    //conn.query("INSERT INTO parking_rating SET ?", [rating], function (
-      conn.query(`if exists (select * from parking_rating with (updlock,serializable) where id = @id)
-      begin
-         update table set rating=@rating
-         where id = @id
-      end
-      else
-      begin
-         insert into table (key, ...)
-         values (@key, ...)
-      end
-      commit tran`), [], [], [], function (
-      err,
-      results
-    ) {
-      if (err) return res.send(err);
-      res.status(200).json(results.insertId);
-    });
-  } */
+    conn.query(
+      `REPLACE INTO parking_rating (userId, parkingId, rating)
+      values (?, ?, ?);
+      `,
+      [userId, parkingId, rating],
+      function (err, results) {
+        if (err) return res.send(err);
+        res.status(200).json(results.insertId);
+      }
+    );
+  },
 
   getRatingForUser: function (req, res) {
     const userId = req.query.userId;
     const parkingId = req.query.parkingId;
     conn.query(
-      "select * from parking_rating where userId = ? AND parkingId = ?;",
+      "SELECT * from parking_rating where userId = ? AND parkingId = ?;",
       [userId, parkingId],
       function (err, results) {
         if (err) return res.status(500).send(err);
@@ -233,17 +231,28 @@ module.exports = {
     );
   },
 
-  deleteRating:function (req, res) {
+  getAverageRating: function (req, res) {
     const parkingId = req.query.parkingId;
-    const userId = req.query.userId;
-    conn.query("DELETE FROM parking_rating WHERE parkingId = ? AND userId = ?", [parkingId, userId], function (
-      err,
-      results
-    ) {
-      if (err) return res.send(err);
-      res.status(200).json({ message: "Rating removed!" });
-    });
+    conn.query(
+      `select avg(rating) as rating from parking_rating where parkingId = ?;`,
+      [parkingId],
+      function (err, results) {
+        if (err) return res.status(500).send(err);
+        res.status(200).json(results);
+      }
+    );
   },
 
-  
+  deleteRating: function (req, res) {
+    const parkingId = req.query.parkingId;
+    const userId = req.query.userId;
+    conn.query(
+      "DELETE FROM parking_rating WHERE parkingId = ? AND userId = ?",
+      [parkingId, userId],
+      function (err, results) {
+        if (err) return res.send(err);
+        res.status(200).json({ message: "Rating removed!" });
+      }
+    );
+  },
 };

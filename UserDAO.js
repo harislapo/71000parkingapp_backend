@@ -38,7 +38,7 @@ module.exports = {
   },
 
   getAllUsers: function (req, res) {
-    conn.query("SELECT * FROM user ORDER BY createDate DESC;", function (
+    conn.query("SELECT * FROM user ORDER BY id ASC;", function (
       err,
       results
     ) {
